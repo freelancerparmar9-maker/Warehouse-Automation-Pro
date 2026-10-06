@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+
+# Project Data Folders
+reports/
+processed/
+
+# OS Files
+.DS_Store
+Thumbs.db

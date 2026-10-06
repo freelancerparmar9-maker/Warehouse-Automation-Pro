@@ -1,0 +1,12 @@
+{
+  "name": "warehouse-automation-pro",
+  "version": "1.0.0",
+  "main": "app/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^28.0.0",
+    "@antigravity/cli": "latest"
+  }
+}
