@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Warehouse Automation Pro</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #1e1e1e;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            border: 1px solid #333;
+            padding: 40px;
+            border-radius: 12px;
+            background: #252526;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            color: #007acc;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #cccccc;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #005f99;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>AuditPro Local</h1>
+        <p>Reconcile Invoices & Packing Lists</p>
+        <button id="runBtn">Run Audit Now</button>
+        <button id="openBtn" style="display:none; background:#28a745; margin-left:10px;">Open Report</button>
+        <div id="status">Ready to scan input/ folder</div>
+    </div>
+
+    <script>
+        const runBtn = document.getElementById('runBtn');
+        const openBtn = document.getElementById('openBtn');
+        const status = document.getElementById('status');
+        let currentReportPath = '';
+
+        runBtn.addEventListener('click', () => {
+            status.innerText = "Audit in progress... check terminal for logs.";
+            status.style.color = "#888";
+            openBtn.style.display = 'none';
+            window.electronAPI.startAudit();
+        });
+
+        openBtn.addEventListener('click', () => {
+            if (currentReportPath) {
+                window.electronAPI.openReport(currentReportPath);
+            }
+        });
+
+        // Listen for the success signal from main.js
+        window.electronAPI.onAuditSuccess((data) => {
+            if (data.error) {
+                status.innerText = data.error;
+                status.style.color = "#f44336"; // Red for error
+                return;
+            }
+            
+            status.innerHTML = `Audit complete!<br>Checked ${data.posChecked} POs.<br>Amount at risk: $${data.amountAtRisk.toFixed(2)}`;
+            status.style.color = "#4caf50"; // Green for success
+            
+            currentReportPath = data.reportPath;
+            openBtn.style.display = 'inline-block';
+        });
+    </script>
+</body>
+
+</html>
